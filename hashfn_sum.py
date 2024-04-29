@@ -1,5 +1,5 @@
 def hashfn(x: bytes) -> int:
-    return sum(list(x)) % (2 ** 32)
+    return sum(list(x)) % (2 ** 64)
 
 
 def preimage(hash: int) -> bytes:

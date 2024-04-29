@@ -1,8 +1,8 @@
-HASH_MASK = 2 ** 32 - 1
+HASH_MASK = 2 ** 64 - 1
 
 
 def rotate_left(x: int, bits: int) -> int:
-    return ((x << bits) & HASH_MASK) + (x >> (32 - bits))
+    return ((x << bits) & HASH_MASK) + (x >> (64 - bits))
 
 
 def preimage(x: bytes) -> int:
