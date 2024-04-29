@@ -13,11 +13,11 @@ def test_hash(hashfn):
     )
 
 
-def test_collision(hashfn, collisionfn):
+def test_preimage(hashfn, preimagefn):
     quickcheck_bytes(
-        "collision collides", lambda x: (
+        "preimage collides", lambda x: (
             y := hashfn(x),
-            hashfn(collisionfn(y))
+            hashfn(preimagefn(y))
         ),
         lambda output: output[0] == output[1]
     )
@@ -29,15 +29,15 @@ def import_hashfn(file: str):
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
-    collisionfn = None
+    preimagefn = None
     try:
-        collisionfn = module.__getattribute__("collide")
+        preimagefn = module.__getattribute__("preimage")
     except:
         pass
 
     return (
         module.__getattribute__("hashfn"),
-        collisionfn
+        preimagefn
     )
 
 
@@ -50,11 +50,11 @@ if __name__ == "__main__":
                         default=quickcheck_opts.iters)
     args = parser.parse_args()
 
-    (hashfn, collisionfn) = import_hashfn(args.hashfn_impl_file)
+    (hashfn, preimagefn) = import_hashfn(args.hashfn_impl_file)
     quickcheck_opts.max_bytes = args.max_bytes
     quickcheck_opts.iters = args.iters
 
     test_hash(hashfn)
 
-    if collisionfn is not None:
-        test_collision(hashfn, collisionfn)
+    if preimagefn is not None:
+        test_preimage(hashfn, preimagefn)
